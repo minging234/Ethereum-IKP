@@ -6,10 +6,10 @@ import { default as Web3} from 'web3';
 import { default as contract } from 'truffle-contract'
 
 // Import our contract artifacts and turn them into usable abstractions.
-import metacoin_artifacts from '../../build/contracts/MetaCoin.json'
+import greeter_artifacts from '../../build/contracts/Greeter.json'
 
-// MetaCoin is our usable abstraction, which we'll use through the code below.
-var MetaCoin = contract(metacoin_artifacts);
+// Greeter is our usable abstraction, which we'll use through the code below.
+var Greeter = contract(greeter_artifacts);
 
 // The following code is simple to show off interacting with your contracts.
 // As your needs grow you will likely need to change its form and structure.
@@ -22,7 +22,7 @@ window.App = {
     var self = this;
 
     // Bootstrap the MetaCoin abstraction for Use.
-    MetaCoin.setProvider(web3.currentProvider);
+    Greeter.setProvider(web3.currentProvider);
 
     // Get the initial account balance so it can be displayed.
     web3.eth.getAccounts(function(err, accs) {
@@ -39,7 +39,9 @@ window.App = {
       accounts = accs;
       account = accounts[0];
 
-      self.refreshBalance();
+      // self.refreshBalance();
+      self.showGreet();
+      
     });
   },
 
@@ -48,42 +50,75 @@ window.App = {
     status.innerHTML = message;
   },
 
-  refreshBalance: function() {
-    var self = this;
+  // refreshBalance: function() {
+  //   var self = this;
 
-    var meta;
-    MetaCoin.deployed().then(function(instance) {
-      meta = instance;
-      return meta.getBalance.call(account, {from: account});
-    }).then(function(value) {
-      var balance_element = document.getElementById("balance");
-      balance_element.innerHTML = value.valueOf();
+  //   var meta;
+    // MetaCoin.deployed().then(function(instance) {
+    //   meta = instance;
+    //   return meta.getBalance.call(account, {from: account});
+    // }).then(function(value) {
+    //   var balance_element = document.getElementById("balance");
+    //   balance_element.innerHTML = value.valueOf();
+    // }).catch(function(e) {
+    //   console.log(e);
+    //   self.setStatus("Error getting balance; see log.");
+    // });
+  // },
+  showGreet: function() {
+    var self = this;
+    var gre;
+    Greeter.deployed().then(function(instance) {
+      gre = instance;
+      return gre.greet.call(account,{from:account});
+    }).then(function(value){
+      var greetWord = document.getElementById("balance");
+      greetWord.innerHTML = value.valueOf();
     }).catch(function(e) {
       console.log(e);
-      self.setStatus("Error getting balance; see log.");
+      self.setStatus("Error getting greet word; see log.");
     });
   },
 
-  sendCoin: function() {
-    var self = this;
 
-    var amount = parseInt(document.getElementById("amount").value);
-    var receiver = document.getElementById("receiver").value;
+  // sendCoin: function() {
+  //   var self = this;
 
-    this.setStatus("Initiating transaction... (please wait)");
+  //   var amount = parseInt(document.getElementById("amount").value);
+  //   var receiver = document.getElementById("receiver").value;
 
-    var meta;
-    MetaCoin.deployed().then(function(instance) {
-      meta = instance;
-      return meta.sendCoin(receiver, amount, {from: account});
-    }).then(function() {
-      self.setStatus("Transaction complete!");
-      self.refreshBalance();
-    }).catch(function(e) {
-      console.log(e);
-      self.setStatus("Error sending coin; see log.");
-    });
-  }
+  //   this.setStatus("Initiating transaction... (please wait)");
+
+  //   var meta;
+  //   MetaCoin.deployed().then(function(instance) {
+  //     meta = instance;
+  //     return meta.sendCoin(receiver, amount, {from: account});
+  //   }).then(function() {
+  //     self.setStatus("Transaction complete!");
+  //     self.refreshBalance();
+  //   }).catch(function(e) {
+  //     console.log(e);
+  //     self.setStatus("Error sending coin; see log.");
+  //   });
+  // }
+
+    setGreet: function() {
+      var self = this;
+      var greetWord = document.getElementById("receiver").value;
+      this.setStatus("setting greet word.....(please wait)");
+      var gre;
+      Greeter.deployed().then(function(instance) {
+        gre = instance;
+        return gre.setGreeting(greetWord,{from:account});
+      }).then(function() {
+        self.setStatus("Setting complete!");
+        self.showGreet();
+      }).catch(function(e) {
+        console.log(e);
+        self.setStatus("Error setting greet word; see log")
+      });
+    }
+
 };
 
 window.addEventListener('load', function() {
@@ -95,7 +130,7 @@ window.addEventListener('load', function() {
   } else {
     console.warn("No web3 detected. Falling back to http://127.0.0.1:9545. You should remove this fallback when you deploy live, as it's inherently insecure. Consider switching to Metamask for development. More info here: http://truffleframework.com/tutorials/truffle-and-metamask");
     // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
-    window.web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:9545"));
+    window.web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:8545"));
   }
 
   App.start();
