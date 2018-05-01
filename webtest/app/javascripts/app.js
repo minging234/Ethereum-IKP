@@ -3,15 +3,19 @@ import "../stylesheets/app.css";
 
 // Import libraries we need.
 import { default as Web3} from 'web3';
-import { default as contract } from 'truffle-contract'
+import { default as contract } from 'truffle-contract';
 
 // Import our contract artifacts and turn them into usable abstractions.
-import greeter_artifacts from '../../build/contracts/Greeter.json'
-
+import greeter_artifacts from '../../build/contracts/Greeter.json';
+import ikp_artifacts from '../../build/contracts/RIKP.json';
+import dcp_artifacts from '../../build/contracts/CheckContract.json';
+import rp_artifacts from '../../build/contracts/reaction.json';
 // Greeter is our usable abstraction, which we'll use through the code below.
  var Greeter = contract(greeter_artifacts);
 
-var IKP = contract(greeter_artifacts);
+var IKP = contract(ikp_artifacts);
+var DCP = contract(dcp_artifacts);
+var RP = contract(rp_artifacts);
 
 
 // The following code is simple to show off interacting with your contracts.
@@ -112,17 +116,18 @@ window.App = {
   Domainregister: function() {
     var self = this;
     var ikp;
+    var dcp
     var domainname = document.getElementById("domainname").value;
     var checkeraddress = document.getElementById("checkeraddress").value;
     var Domainthreshold = document.getElementById("Domainthreshold").value;
 
 
-    IKP.deployed().then(function(instance) {
+    IKP.deployed().then(function (instance) {
       ikp = instance;
-      return ikp.domainRegister.call(domainname,checkeraddress,Domainthreshold,{from:account});
-    }).then(function(value){
-      // var greetWord = document.getElementById("balance");
-      // greetWord.innerHTML = value.valueOf();
+      return DCP.deployed()
+    }).then(function(instance) {
+      dcp = instance;
+      ikp.domainRegister.call("www.google.com", dcp.address, Domainthreshold, {from: account, value: web3.toWei(1, "ether")});
     }).catch(function(e) {
       console.log(e);
       self.setStatus("Error getting greet word; see log.");
@@ -322,7 +327,7 @@ window.addEventListener('load', function() {
   } else {
     console.warn("No web3 detected. Falling back to http://127.0.0.1:9545. You should remove this fallback when you deploy live, as it's inherently insecure. Consider switching to Metamask for development. More info here: http://truffleframework.com/tutorials/truffle-and-metamask");
     // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
-    window.web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:8545"));
+    window.web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:7545"));
   }
 
   App.start();
