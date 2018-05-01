@@ -9,7 +9,10 @@ import { default as contract } from 'truffle-contract'
 import greeter_artifacts from '../../build/contracts/Greeter.json'
 
 // Greeter is our usable abstraction, which we'll use through the code below.
-var Greeter = contract(greeter_artifacts);
+ var Greeter = contract(greeter_artifacts);
+
+var IKP = contract(greeter_artifacts);
+
 
 // The following code is simple to show off interacting with your contracts.
 // As your needs grow you will likely need to change its form and structure.
@@ -106,7 +109,170 @@ window.App = {
     });
   },
 
+  Domainregister: function() {
+    var self = this;
+    var ikp;
+    var domainname = document.getElementById("domainname").value;
+    var checkeraddress = document.getElementById("checkeraddress").value;
+    var Domainthreshold = document.getElementById("Domainthreshold").value;
 
+
+    IKP.deployed().then(function(instance) {
+      ikp = instance;
+      return ikp.domainRegister.call(domainname,checkeraddress,Domainthreshold,{from:account});
+    }).then(function(value){
+      // var greetWord = document.getElementById("balance");
+      // greetWord.innerHTML = value.valueOf();
+    }).catch(function(e) {
+      console.log(e);
+      self.setStatus("Error getting greet word; see log.");
+    });
+  },
+
+  RPPurchase: function() {
+    var self = this;
+    var ikp;
+    var RPHash = document.getElementById("RPHash").value;
+    var RPissuer = document.getElementById("RPissuer").value;
+
+
+
+    IKP.deployed().then(function(instance) {
+      ikp = instance;
+      return ikp.rpPurchase.call(RPHash,RPissuer,{from:account});
+    }).then(function(value){
+      // var greetWord = document.getElementById("balance");
+      // greetWord.innerHTML = value.valueOf();
+    }).catch(function(e) {
+      console.log(e);
+      self.setStatus("Error getting greet word; see log.");
+    });
+  },
+
+  caregister: function() {
+    var self = this;
+    var ikp;
+    var caname = document.getElementById("caname").value;
+    var publickey = document.getElementById("publickey").value;
+    var threshold = document.getElementById("threshold").value;
+
+
+    IKP.deployed().then(function(instance) {
+      ikp = instance;
+      return ikp.caRegister.call(caname,publickey,threshold,{from:account});
+    }).then(function(value){
+      // var greetWord = document.getElementById("balance");
+      // greetWord.innerHTML = value.valueOf();
+    }).catch(function(e) {
+      console.log(e);
+      self.setStatus("Error getting greet word; see log.");
+    });
+  },
+
+  issue_RP: function() {
+    var self = this;
+    var ikp;
+    var issueRP = document.getElementById("issueRP").value;
+
+    IKP.deployed().then(function(instance) {
+      ikp = instance;
+      return ikp.rpIssue.call(issueRP,{from:account});
+    }).then(function(value){
+      // var greetWord = document.getElementById("balance");
+      // greetWord.innerHTML = value.valueOf();
+    }).catch(function(e) {
+      console.log(e);
+      self.setStatus("Error getting greet word; see log.");
+    });
+  },
+
+  revokecert: function() {
+    var self = this;
+    var ikp;
+    var revokecert = document.getElementById("revokecert").value;
+
+    IKP.deployed().then(function(instance) {
+      ikp = instance;
+      return ikp.revoke.call(revokecert,{from:account});
+    }).then(function(value){
+      // var greetWord = document.getElementById("balance");
+      // greetWord.innerHTML = value.valueOf();
+    }).catch(function(e) {
+      console.log(e);
+      self.setStatus("Error getting greet word; see log.");
+    });
+  },
+
+  check: function() {
+    var self = this;
+    var ikp;
+    var certToVerify = document.getElementById("certToVerify").value;
+
+    IKP.deployed().then(function(instance) {
+      ikp = instance;
+      // need to be editted
+      return ikp.isRevoked.call(certToVerify,{from:account});
+    }).then(function(value){
+      // var greetWord = document.getElementById("balance");
+      // greetWord.innerHTML = value.valueOf();
+    }).catch(function(e) {
+      console.log(e);
+      self.setStatus("Error getting greet word; see log.");
+    });
+  },
+
+  getRevoke: function() {
+    var self = this;
+    var ikp;
+    var certisrevoke = document.getElementById("certisrevoke").value;
+
+    IKP.deployed().then(function(instance) {
+      ikp = instance;
+      return ikp.isRevoked.call(certisrevoke,{from:account});
+    }).then(function(value){
+      // var greetWord = document.getElementById("balance");
+      // greetWord.innerHTML = value.valueOf();
+    }).catch(function(e) {
+      console.log(e);
+      self.setStatus("Error getting greet word; see log.");
+    });
+  },
+
+  sendcommit: function() {
+    var self = this;
+    var ikp;
+    var cert = document.getElementById("cert").value;
+    var nonce = document.getElementById("nonce").value;
+
+    IKP.deployed().then(function(instance) {
+      ikp = instance;
+      return ikp.reportCommit.call(cert,nonce,{from:account});
+    }).then(function(value){
+      // var greetWord = document.getElementById("balance");
+      // greetWord.innerHTML = value.valueOf();
+    }).catch(function(e) {
+      console.log(e);
+      self.setStatus("Error getting greet word; see log.");
+    });
+  },
+
+  reveal: function() {
+    var self = this;
+    var ikp;
+    var cert = document.getElementById("cert").value;
+    var nonce = document.getElementById("nonce").value;
+
+    IKP.deployed().then(function(instance) {
+      ikp = instance;
+      return ikp.reportReveal.call(cert,nonce,{from:account});
+    }).then(function(value){
+      // var greetWord = document.getElementById("balance");
+      // greetWord.innerHTML = value.valueOf();
+    }).catch(function(e) {
+      console.log(e);
+      self.setStatus("Error getting greet word; see log.");
+    });
+  },
   // sendCoin: function() {
   //   var self = this;
 
