@@ -20,6 +20,14 @@ var account;
 window.App = {
   start: function() {
     var self = this;
+    // document.getElementById("greet").style.visibility='hidden';
+    // document.getElementById("greet").style.visibility='visible';
+
+    document.getElementById("CA").style.display='none';
+    document.getElementById("client").style.display='none';
+    document.getElementById("greet").style.display='none';
+    document.getElementById("Domain").style.display='none';
+
 
     // Bootstrap the MetaCoin abstraction for Use.
     Greeter.setProvider(web3.currentProvider);
@@ -43,6 +51,24 @@ window.App = {
       self.showGreet();
       
     });
+  },
+
+  chooseCA: function() {
+    document.getElementById("CA").style.display='inherit';
+    document.getElementById("client").style.display='none';
+    document.getElementById("Domain").style.display='none';
+  },
+
+  chooseDomain: function() {
+    document.getElementById("CA").style.display='none';
+    document.getElementById("client").style.display='none';
+    document.getElementById("Domain").style.display='inherit';
+  },
+
+  chooseClient: function() {
+    document.getElementById("client").style.display='inherit';
+    document.getElementById("CA").style.display='none';
+    document.getElementById("Domain").style.display='none';
   },
 
   setStatus: function(message) {

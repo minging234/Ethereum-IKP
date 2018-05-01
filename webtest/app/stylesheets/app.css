@@ -1,9 +1,49 @@
 body {
-  margin-left: 25%;
+  /* margin-left: 25%;
   margin-right: 25%;
-  margin-top: 10%;
+  margin-top: 10%; */
   font-family: "Open Sans", sans-serif;
 }
+
+.part {
+  margin-left: 25%;
+  margin-right: 25%;
+  margin-bottom: 10%;
+}
+
+#topbar {
+  margin:0;
+  height: 60px; 
+  background-color: rgb(13, 72, 134);
+  
+}
+
+#ikpaddress {
+  margin-left: 25%;
+  margin-right: 25%;
+}
+
+.section-word {
+  margin-left: 10px;
+  height: 60px; 
+  float: left;
+  color: rgb(255, 255, 255);
+  font-size: 35px;
+  
+}
+
+.section {
+                
+  margin:20px;
+  height: 60px; 
+  float: right;
+
+  color: rgb(255, 255, 255);
+  font-size: 20px;
+  text-underline-position: below;
+  
+}
+
 
 label {
   display: inline-block;
