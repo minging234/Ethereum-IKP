@@ -82,6 +82,11 @@ contract RIKP {
         caBalances[_name] = msg.value;
     }
 
+    // function domainRegister (int s) public pure returns (int) {
+        // require (msg.value == 50 wei);
+        // return s+1;
+    // }
+
     function caUpdate (bytes _name, address _payout, address[] _pubs, address[] _updates) public payable {
         require(cas[_name].updateThold > 0 && msg.value == updateFee);
         for (uint i = 0; i < cas[_name].updateAddrs.length; i++) {
@@ -107,7 +112,7 @@ contract RIKP {
     }
     
     function domainRegister (bytes _name, address _chk, address[] _updates, uint _threshold) public payable {
-        require(dcps[_name].validFrom == 0 && msg.value == dregisterFee);
+        require(dcps[_name].validFrom == 0 && msg.value >= dregisterFee);
         dcps[_name] = DCP({
             domainName: _name,
             validFrom: now,

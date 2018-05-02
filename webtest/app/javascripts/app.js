@@ -8,10 +8,10 @@ import { default as contract } from 'truffle-contract';
 // Import our contract artifacts and turn them into usable abstractions.
 import greeter_artifacts from '../../build/contracts/Greeter.json';
 import ikp_artifacts from '../../build/contracts/RIKP.json';
-import dcp_artifacts from '../../build/contracts/CheckContract.json';
-import rp_artifacts from '../../build/contracts/reaction.json';
+import dcp_artifacts from '../../build/contracts/DCP.json';
+import rp_artifacts from '../../build/contracts/RP.json';
 // Greeter is our usable abstraction, which we'll use through the code below.
- var Greeter = contract(greeter_artifacts);
+var Greeter = contract(greeter_artifacts);
 
 var IKP = contract(ikp_artifacts);
 var DCP = contract(dcp_artifacts);
@@ -38,6 +38,9 @@ window.App = {
 
     // Bootstrap the MetaCoin abstraction for Use.
     Greeter.setProvider(web3.currentProvider);
+    IKP.setProvider(web3.currentProvider);
+    DCP.setProvider(web3.currentProvider);
+    RP.setProvider(web3.currentProvider);
 
     // Get the initial account balance so it can be displayed.
     web3.eth.getAccounts(function(err, accs) {
@@ -116,7 +119,7 @@ window.App = {
   Domainregister: function() {
     var self = this;
     var ikp;
-    var dcp
+    var dcp;
     var domainname = document.getElementById("domainname").value;
     var checkeraddress = document.getElementById("checkeraddress").value;
     var Domainthreshold = document.getElementById("Domainthreshold").value;
@@ -124,10 +127,12 @@ window.App = {
 
     IKP.deployed().then(function (instance) {
       ikp = instance;
-      return DCP.deployed()
+      return DCP.deployed();
     }).then(function(instance) {
       dcp = instance;
-      ikp.domainRegister.call("www.google.com", dcp.address, Domainthreshold, {from: account, value: web3.toWei(1, "ether")});
+      ikp.domainRegister.call(web3.toHex(domainname), dcp.address,
+                              ["0xC55F5005e1AD3FB49734b50885105Ce6e0158CF1", "0x0De1962d829777644d8af8396cb95796C68A30e8"],
+                              Domainthreshold, {from:account, value:web3.toWei(1, "ether")});
     }).catch(function(e) {
       console.log(e);
       self.setStatus("Error getting greet word; see log.");
@@ -164,7 +169,7 @@ window.App = {
 
     IKP.deployed().then(function(instance) {
       ikp = instance;
-      return ikp.caRegister.call(caname,publickey,threshold,{from:account});
+      return ikp.caRegister.call(caname,publickey,threshold,{from:account, value:web3.toWei(15, "ether")});
     }).then(function(value){
       // var greetWord = document.getElementById("balance");
       // greetWord.innerHTML = value.valueOf();
@@ -325,7 +330,7 @@ window.addEventListener('load', function() {
     // Use Mist/MetaMask's provider
     window.web3 = new Web3(web3.currentProvider);
   } else {
-    console.warn("No web3 detected. Falling back to http://127.0.0.1:9545. You should remove this fallback when you deploy live, as it's inherently insecure. Consider switching to Metamask for development. More info here: http://truffleframework.com/tutorials/truffle-and-metamask");
+    console.warn("No web3 detected. Falling back to http://127.0.0.1:7545. You should remove this fallback when you deploy live, as it's inherently insecure. Consider switching to Metamask for development. More info here: http://truffleframework.com/tutorials/truffle-and-metamask");
     // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
     window.web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:7545"));
   }
